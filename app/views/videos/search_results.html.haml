@@ -1,0 +1,12 @@
+%article.video_category
+  -if @search_results.empty?
+    %h3 No matches were found.
+  -else
+    .category-row
+      %header
+        %h3 Results
+    .videos.row
+      -@search_results.each do |video|
+        .video.col-sm-2
+          = link_to video_path(video) do
+            %img(src='#{video.small_cover_url}')

@@ -1,5 +1,5 @@
 class VideosController < ApplicationController
-  before_action :set_video, except: [:index, :new, :create]
+  before_action :set_video, except: [:index, :new, :create, :search]
 
   def index
     @categories = Category.all
@@ -25,6 +25,11 @@ class VideosController < ApplicationController
 
   def destroy
 
+  end
+
+  def search
+    @search_results = Video.search_by_title(params[:search_terms])
+    render "search_results"
   end
 
   private

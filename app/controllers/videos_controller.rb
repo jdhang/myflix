@@ -29,7 +29,6 @@ class VideosController < ApplicationController
 
   def search
     @search_results = Video.search_by_title(params[:search_terms])
-    render "search_results"
   end
 
   private

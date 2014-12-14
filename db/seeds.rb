@@ -11,3 +11,5 @@ Video.create({title: 'Family Guy', description: "This is a great funny show abou
 Video.create({title: 'Futurama', description: "This is a funny show about the future!", small_cover_url: "/tmp/futurama.jpg", category: comedies})
 Video.create({title: 'South Park', description: "Hilarious show!!", small_cover_url: "/tmp/south_park.jpg", category: comedies})
 Video.create({title: 'Monk', description: "This is a great show", small_cover_url: "/tmp/monk.jpg", category: dramas})
+
+User.create({email: "jason@example.com", password: "password", full_name: "Jason Hang"})

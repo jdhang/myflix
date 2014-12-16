@@ -10,7 +10,7 @@ class UsersController < ApplicationController
 
     if @user.save
       flash[:success] = "You have successfully registered"
-      redirect_to home_path
+      redirect_to signin_path
     else
       render :new
     end
@@ -20,7 +20,7 @@ class UsersController < ApplicationController
   private
 
     def user_params
-      params.require(:user).permit(:email, :password, :email)
+      params.require(:user).permit(:email, :password, :full_name)
     end
 
 

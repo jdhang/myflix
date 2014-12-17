@@ -11,29 +11,10 @@ class VideosController < ApplicationController
     @reviews = @video.reviews
   end
 
-  def new
-
-  end
-
-  def create
-
-  end
-
-  def edit
-  end
-
-  def update
-  
-  end
-
-  def destroy
-
-  end
-
   def search
     @search_results = Video.search_by_title(params[:search_terms])
   end
-
+  
   private
     def video_params
       params.require(:video).permit(:title, :description, :small_cover_url, :large_cover_url)

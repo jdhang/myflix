@@ -79,4 +79,87 @@ describe VideosController do
     end
 
   end
+
+  describe "GET add" do
+    
+    context "with authenticated users" do
+
+      let(:user) { Fabricate(:user) }
+      let(:video) { Fabricate(:video) }
+      let(:monk) { Fabricate(:video, title: "Monk")}
+
+      before do
+        session[:user_id] = user.id
+      end
+
+      context "and video not in queue will" do
+
+        before do
+          queue_item = Fabricate(:queue_item, video: monk, user: user, order: 1)
+          get :add, id: video.id
+        end
+
+        it "set @queue_item" do
+          expect(assigns(:queue_item)).to_not be_nil
+        end
+
+        it "create a queue item" do
+          expect(QueueItem.count).to eq(2)
+        end
+
+        it "create a queue item with the associated video" do
+          expect(assigns(:queue_item).video).to eq(video)
+        end
+        
+        it "create a queue item for the signed in user" do
+          expect(assigns(:queue_item).user).to eq(user)
+        end
+
+        it "create a queue item with the correct order number" do
+          expect(assigns(:queue_item).order).to eq(2)
+        end
+
+        it "redirect to my queue page for authenticated users" do
+          expect(response). to redirect_to myqueue_path
+        end
+
+      end
+
+      context "and video already in queue will" do
+
+        before do
+          queue_item = Fabricate(:queue_item, video: video, user: user, order: 1)
+          get :add, id: video.id
+        end
+        
+        it "not create a queue item" do
+          expect(QueueItem.count).to eq(1)
+        end
+
+        it "flash an error message" do
+          expect(flash[:danger]).to_not be_nil
+        end
+
+        it "redirect to video page" do
+          expect(response).to redirect_to video
+        end
+
+      end
+
+    end
+
+    context "with unauthenticated users" do
+
+      it "redirects to sign in page" do
+        post :add, id: Fabricate(:video).id
+
+        expect(response).to redirect_to signin_path
+      end
+
+    end
+
+
+  end
+
+
 end

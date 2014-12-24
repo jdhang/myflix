@@ -10,17 +10,26 @@ class QueueItemsController < ApplicationController
     video = Video.find(params[:video_id])
     
     if video_in_queue? (video)
-      flash[:danger] = "Video is already in your queue"
-      redirect_to video
+      redirect_to video, alert: "Video is already in your queue"
     else
       queue_video(video)
       redirect_to myqueue_path
     end
   end
 
+  def update_queue
+    begin
+      update_queue_items
+      normalize_queue_item_position
+    rescue ActiveRecord::RecordInvalid
+      flash[:alert] = "Invalid list orders entered."
+    end
+    redirect_to myqueue_path
+  end
+
   def destroy
     @queue_item.destroy if current_user.queue_items.include?(@queue_item)
-    reorder_queue_items(current_user.queue_items)
+    normalize_queue_item_position
     redirect_to myqueue_path
   end
 
@@ -31,10 +40,10 @@ class QueueItemsController < ApplicationController
   end
 
   def queue_video(video)
-    QueueItem.create(video: video, user: current_user, order: new_queue_item_order)
+    QueueItem.create(video: video, user: current_user, position: new_queue_item_position)
   end
 
-  def new_queue_item_order
+  def new_queue_item_position
     current_user.queue_items.count + 1
   end
 
@@ -42,14 +51,18 @@ class QueueItemsController < ApplicationController
     QueueItem.find_by(video: video)
   end
 
-  def queue_item_order
-    @queue_item.order
+  def update_queue_items
+    ActiveRecord::Base.transaction do
+      params[:queue_items].each do |queue_item_data|
+        queue_item = QueueItem.find(queue_item_data["id"])
+        queue_item.update!(position: queue_item_data["position"])
+      end
+    end
   end
 
-  def reorder_queue_items(queue_items)
-    queue_items.each do |queue_item|
-      queue_item.order -= 1 if queue_item.order > queue_item_order
-      queue_item.save
+  def normalize_queue_item_position
+    current_user.queue_items.each_with_index do |queue_item, index|
+      queue_item.update(position: index+1)
     end
   end
 

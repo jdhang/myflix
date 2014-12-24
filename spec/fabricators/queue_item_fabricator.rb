@@ -1,3 +1,3 @@
 Fabricator(:queue_item) do
-  order { (1..10).to_a.sample }
+  position { [1,2,3,4].sample }
 end

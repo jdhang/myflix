@@ -115,9 +115,13 @@ describe QueueItemsController do
     context "with authenticated users" do
 
       let(:current_user) { Fabricate(:user) }
-      let(:queue_item1) { Fabricate(:queue_item, position: 1, user: current_user) }
-      let(:queue_item2) { Fabricate(:queue_item, position: 2, user: current_user) }
-      let(:queue_item3) { Fabricate(:queue_item, position: 3, user: current_user) }
+      let(:review1) { Fabricate(:review, rating: 3, author: current_user) }
+      let(:review2) { Fabricate(:review, rating: 4, author: current_user) }
+      let(:video1) { Fabricate(:video, reviews: [review1])}
+      let(:video2) { Fabricate(:video, reviews: [review2])}
+      let(:queue_item1) { Fabricate(:queue_item, position: 1, user: current_user, video: video1) }
+      let(:queue_item2) { Fabricate(:queue_item, position: 2, user: current_user, video: video2) }
+      let(:queue_item3) { Fabricate(:queue_item, position: 3, user: current_user, video: Fabricate(:video) ) }
 
       before do
         session[:user_id] = current_user.id
@@ -138,6 +142,21 @@ describe QueueItemsController do
         it "normalizes queue position numbers" do
           post :update_queue, queue_items: [{id: queue_item1.id, position: 4},{id: queue_item2.id, position: 2},{id: queue_item3.id, position: 3}]
           expect(current_user.queue_items.map(&:position)).to eq([1,2,3])
+        end
+
+        it "creates a new review rating for the queue item's video if one doesn't exist" do
+          post :update_queue, queue_items: [{id: queue_item1.id, position: 1},{id: queue_item2.id, position: 2},{id: queue_item3.id, position: 3, rating: 2}]
+          expect(queue_item3.reload.rating).to eq(2)
+        end
+
+        it "updates the review rating for the queue item's video if one exists" do
+          post :update_queue, queue_items: [{id: queue_item1.id, position: 1, rating: 4},{id: queue_item2.id, position: 2, rating: 2}]
+          expect(queue_item2.reload.rating).to eq(2)
+        end
+
+        it "does not create a new review rating if one exists" do
+          post :update_queue, queue_items: [{id: queue_item1.id, position: 1, rating: 4},{id: queue_item2.id, position: 2, rating: 2}]
+          expect(queue_item2.reload.video.reviews.count).to eq(1) 
         end
       end
 

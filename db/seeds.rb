@@ -15,7 +15,6 @@ monk = Video.create({title: 'Monk', description: "This is a great show", small_c
 jason = User.create({email: "jason@example.com", password: "password", full_name: "Jason Hang"})
 
 Review.create(rating: 5, author: jason, body: "this is a really good show", video: family_guy)
-Review.create(rating: 2, author: jason, body: "this is an okay show", video: family_guy)
 
 QueueItem.create(position: 1, user: jason, video: family_guy)
 QueueItem.create(position: 2, user: jason, video: monk)

@@ -9,7 +9,7 @@ class QueueItemsController < ApplicationController
   def create
     video = Video.find(params[:video_id])
     
-    if video_in_queue? (video)
+    if video_in_queue?(video)
       redirect_to video, alert: "Video is already in your queue"
     else
       queue_video(video)

@@ -12,7 +12,7 @@ class User < ActiveRecord::Base
       new_queue_items.each do |queue_item_data|
         queue_item = QueueItem.find(queue_item_data["id"])
         queue_item.update!(position: queue_item_data["position"])
-        if queue_item_data["rating"] != ""
+        if !input_rating_empty?(queue_item_data["rating"])
           if queue_item.rating 
             update_queue_item_rating(queue_item, queue_item_data["rating"])
           else
@@ -37,6 +37,10 @@ class User < ActiveRecord::Base
 
   def update_queue_item_rating(queue_item, rating)
     queue_item.video.reviews.where(author: queue_item.user).first.update!(skip_validation: true, rating: rating)
+  end
+
+  def input_rating_empty?(rating)
+    rating == ""
   end
 
 end

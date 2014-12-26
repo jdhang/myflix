@@ -38,18 +38,15 @@ describe QueueItemsController do
     
     context "with authenticated users" do
 
-    let(:user) { Fabricate(:user) }
     let(:video) { Fabricate(:video) }
     let(:monk) { Fabricate(:video, title: "Monk")}
 
-      before do
-        session[:user_id] = user.id
-      end
+      before { set_current_user }
 
       context "and video not in queue will" do
 
         before do
-          queue_item = Fabricate(:queue_item, video: monk, user: user, position: 1)
+          queue_item = Fabricate(:queue_item, video: monk, user: current_user, position: 1)
           post :create, video_id: video.id
         end
 
@@ -62,7 +59,7 @@ describe QueueItemsController do
         end
         
         it "create a queue item for the signed in user" do
-          expect(QueueItem.last.user).to eq(user)
+          expect(QueueItem.last.user).to eq(current_user)
         end
 
         it "create a queue item at the end of the queue list" do
@@ -78,12 +75,12 @@ describe QueueItemsController do
       context "and video already in queue will" do
 
         before do
-          queue_item = Fabricate(:queue_item, video: video, user: user, position: 1)
+          queue_item = Fabricate(:queue_item, video: video, user: current_user, position: 1)
           post :create, video_id: video.id
         end
         
         it "not create a queue item" do
-          expect(user.queue_items.count).to eq(1)
+          expect(current_user.queue_items.count).to eq(1)
         end
 
         it "flash an error message" do
@@ -114,7 +111,6 @@ describe QueueItemsController do
 
     context "with authenticated users" do
 
-      let(:current_user) { Fabricate(:user) }
       let(:review1) { Fabricate(:review, rating: 3, author: current_user) }
       let(:review2) { Fabricate(:review, rating: 4, author: current_user) }
       let(:video1) { Fabricate(:video, reviews: [review1])}
@@ -123,9 +119,7 @@ describe QueueItemsController do
       let(:queue_item2) { Fabricate(:queue_item, position: 2, user: current_user, video: video2) }
       let(:queue_item3) { Fabricate(:queue_item, position: 3, user: current_user, video: Fabricate(:video) ) }
 
-      before do
-        session[:user_id] = current_user.id
-      end
+      before { set_current_user }
 
       context "with valid inputs" do
 

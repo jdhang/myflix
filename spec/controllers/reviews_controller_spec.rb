@@ -1,9 +1,7 @@
 require 'spec_helper'
 
 describe ReviewsController do
-  
   describe "POST create" do
-    
     context "with authenticated users" do
       let(:current_user) { Fabricate(:user) }
       let(:video) { Fabricate(:video) }
@@ -49,27 +47,20 @@ describe ReviewsController do
         it "sets @video" do
           expect(assigns(:video)).to eq(video)
         end
-        
         it "renders video#show template" do
           expect(response).to render_template 'videos/show'
         end
-
       end
-      
     end
 
     context "with unauthenticated users" do
-      
       before do
         avatar = Fabricate(:video)
         post :create, review: Fabricate.attributes_for(:review), video_id: avatar.id
       end
-
       it "redirects to sign in path" do
         expect(response).to redirect_to signin_path
       end
     end
-
   end
-
 end

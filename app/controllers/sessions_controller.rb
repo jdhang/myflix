@@ -11,7 +11,8 @@ class SessionsController < ApplicationController
       session[:user_id] = user.id
       redirect_to home_path, notice: "You have successfully signed in."
     else
-      render :new, alert: "Your email or password was invalid."
+      flash[:alert] = "Your email or password was invalid."
+      render :new
     end
 
   end

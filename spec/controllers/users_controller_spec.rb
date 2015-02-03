@@ -37,19 +37,16 @@ describe UsersController do
 
   describe "POST create" do
     context "with valid input" do
-
       before do
         post :create, user: Fabricate.attributes_for(:user)
       end
       it "creates user" do
         expect(User.count).to eq(1)
       end
-
       it "redirects to sign in path" do
         expect(response).to redirect_to signin_path
       end
     end
-
     context "with invalid input" do
       before do
         post :create, user: { email: "sample@example.com", full_name: "Full Name" }

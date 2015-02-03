@@ -14,12 +14,10 @@ class SessionsController < ApplicationController
       flash[:alert] = "Your email or password was invalid."
       render :new
     end
-
   end
 
   def destroy
     session[:user_id] = nil
     redirect_to root_path, notice: "You have successfully logged out."
   end
-
 end

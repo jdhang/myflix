@@ -1,6 +1,9 @@
 class User < ActiveRecord::Base
   has_many :reviews
   has_many :queue_items, -> {order :position}
+  has_many :followings
+  has_many :followers, through: :followings
+
   has_secure_password validations: false
 
   validates_presence_of :email, :password, :full_name
@@ -33,17 +36,15 @@ class User < ActiveRecord::Base
   end
 
   private
+    def new_queue_item_review(queue_item, rating)
+      queue_item.video.reviews.create!(skip_validation: true, rating: rating, author: queue_item.user)
+    end
 
-  def new_queue_item_review(queue_item, rating)
-    queue_item.video.reviews.create!(skip_validation: true, rating: rating, author: queue_item.user)
-  end
+    def update_queue_item_rating(queue_item, rating)
+      queue_item.video.reviews.where(author: queue_item.user).first.update!(skip_validation: true, rating: rating)
+    end
 
-  def update_queue_item_rating(queue_item, rating)
-    queue_item.video.reviews.where(author: queue_item.user).first.update!(skip_validation: true, rating: rating)
-  end
-
-  def input_rating_empty?(rating)
-    rating == ""
-  end
-
+    def input_rating_empty?(rating)
+      rating == ""
+    end
 end

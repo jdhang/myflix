@@ -41,7 +41,10 @@ class User < ActiveRecord::Base
     end
 
     def update_queue_item_rating(queue_item, rating)
-      queue_item.video.reviews.where(author: queue_item.user).first.update!(skip_validation: true, rating: rating)
+      review = queue_item.video.reviews.where(author: queue_item.user).first
+      if review
+        review.update!(skip_validation: true, rating: rating)
+      end
     end
 
     def input_rating_empty?(rating)

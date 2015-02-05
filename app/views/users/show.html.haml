@@ -4,7 +4,7 @@
       %article
         %header
           %img(src="http://www.gravatar.com/avatar/#{Digest::MD5.hexdigest('#{@user.email}'.downcase)}?s=40")
-          %h2= @user.full_name + "'s video collections (" + @user.queue_items.count.to_s + ")"
+          %h2= "#{@user.full_name}'s video collections (#{@user.queue_items.count})"
           -if @user.followers.include?(current_user)
             = link_to "Unfollow", unfollow_path(user_id: @user.id), method: :delete, class: "btn btn-default pull-right"
           -else
@@ -26,7 +26,7 @@
   .row
     .col-sm-10.col-sm-offset-1
       %header
-        %h3= @user.full_name + "'s Reviews (" + @user.reviews.count.to_s + ")"
+        %h3= "#{@user.full_name}'s Reviews (#{@user.reviews.count})"
       %ul
         - @user.reviews.each do |review|
           %article.review

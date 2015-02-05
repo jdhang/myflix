@@ -1,0 +1,21 @@
+%section.people
+  %header
+    %h2 People I Follow
+  %table.table
+    %thead
+      %tr
+        %th(width="30%")
+        %th(width="20%") Videos in Queue
+        %th(width="20%") Followers
+        %th(width="30%") Unfollow
+    %tbody
+      - @followings.each do |following|
+        %tr
+          %td
+            %img(src="http://www.gravatar.com/avatar/#{Digest::MD5.hexdigest('#{following.user.email}'.downcase)}?s=40")
+            = link_to following.user.full_name, user_path(following.user)
+          %td.extra-padding= following.user.queue_items.count.to_s
+          %td.extra-padding= following.user.followers.count.to_s
+          %td.extra-padding
+            = link_to unfollow_path(user_id: following.user.id), method: :delete do
+              %i.glyphicon.glyphicon-remove

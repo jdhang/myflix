@@ -1,14 +1,18 @@
 require 'spec_helper'
 
 describe FollowingsController do
+  before(:each) do
+    request.env["HTTP_REFERER"] = "previous_page"
+  end
   describe "GET people" do
     context "with authenticated users" do
+      let(:following) { Fabricate(:following, follower_id: current_user.id) }
       before do
         set_current_user
         get :people
       end
-      it "sets @followers" do
-        expect(assigns(:followers)).to eq(current_user.followers)
+      it "sets @followings" do
+        expect(assigns(:followings)).to eq([following])
       end
     end
     context "with unauthenticated users" do
@@ -36,8 +40,8 @@ describe FollowingsController do
       it "flashes success message" do
         expect(flash[:notice]).to_not be_nil
       end
-      it "redirects to people path" do
-        expect(response).to redirect_to people_path
+      it "redirects to previous page" do
+        expect(response).to redirect_to "previous_page"
       end
     end
     context "with unauthenticated users" do
@@ -63,8 +67,8 @@ describe FollowingsController do
       it "flashes success message" do
         expect(flash[:notice]).to_not be_nil
       end
-      it "redirects to people path" do
-        expect(response).to redirect_to people_path
+      it "redirects to previous page" do
+        expect(response).to redirect_to "previous_page"
       end
     end
     context "with unauthenticated users" do

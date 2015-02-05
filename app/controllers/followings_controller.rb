@@ -1,8 +1,9 @@
 class FollowingsController < ApplicationController
   before_action :require_user
+  before_action :set_return_to, only: [:create, :destroy]
 
   def people
-    @followings = current_user.followings
+    @followings = Following.where(follower_id: current_user.id)
   end
 
   def create
@@ -10,10 +11,10 @@ class FollowingsController < ApplicationController
     @following = @user.followings.build(follower_id: current_user.id)
     if @following.save
       flash[:notice] = "Following #{@user.full_name}."
-      redirect_to people_path
+      redirect_to session.delete(:return_to)
     else
       flash[:alert] = "Unable to follow user."
-      redirect_to user_path(id: params[:follower_id])
+      redirect_to session.delete(:return_to)
     end
   end
 
@@ -22,6 +23,6 @@ class FollowingsController < ApplicationController
     @following = @user.followings.find_by(follower_id: current_user.id)
     @following.destroy
     flash[:notice] = "Unfollowed #{@user.full_name}."
-    redirect_to people_path
+    redirect_to session.delete(:return_to)
   end
 end

@@ -17,4 +17,8 @@ class ApplicationController < ActionController::Base
       redirect_to signin_path
     end
   end
+
+  def set_return_to
+    session[:return_to] ||= request.referer
+  end
 end

@@ -1,9 +1,6 @@
 require 'spec_helper'
 
 describe FollowingsController do
-  before(:each) do
-    request.env["HTTP_REFERER"] = "previous_page"
-  end
   describe "GET people" do
     context "with authenticated users" do
       let(:following) { Fabricate(:following, follower_id: current_user.id) }
@@ -26,6 +23,7 @@ describe FollowingsController do
       let(:user) { Fabricate(:user) }
       before do
         set_current_user
+        request.env["HTTP_REFERER"] = "previous_page"
         post :create, user_id: user.id
       end
       it "sets @user" do
@@ -55,6 +53,7 @@ describe FollowingsController do
       let(:user) { Fabricate(:user) }
       before do
         set_current_user
+        request.env["HTTP_REFERER"] = "previous_page"
         @following = user.followings.create(follower_id: current_user.id)
         delete :destroy, user_id: user.id
       end

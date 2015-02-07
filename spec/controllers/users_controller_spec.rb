@@ -6,7 +6,7 @@ describe UsersController do
       let(:user) { Fabricate(:user) }
       before do
         set_current_user
-        get :show, id: user.id
+        get :show, id: user.token
       end
       it "set @user" do
         expect(assigns(:user)).to eq(user)
@@ -43,6 +43,9 @@ describe UsersController do
       it "creates user" do
         expect(User.count).to eq(1)
       end
+      it "flashes success message" do
+        expect(flash[:notice]).to be_present
+      end
       it "redirects to sign in path" do
         expect(response).to redirect_to signin_path
       end
@@ -51,17 +54,34 @@ describe UsersController do
       before do
         post :create, user: { email: "sample@example.com", full_name: "Full Name" }
       end
-
       it "does not create user" do
         expect(User.count).to eq(0)
       end
-
       it "render the :new template" do
         expect(response).to render_template :new
       end
-
       it "set @user" do
         expect(assigns(:user)).to be_instance_of(User)
+      end
+    end
+    context "email sending" do
+      before do
+        post :create, user: Fabricate.attributes_for(:user)
+      end
+      it "sends out the email" do
+        expect(ActionMailer::Base.deliveries).to be_present
+      end
+      it "sends from the right email" do
+        message = ActionMailer::Base.deliveries.last
+        expect(message.from).to eq(["welcome@myflix.com"])
+      end
+      it "sends to the right user" do
+        message = ActionMailer::Base.deliveries.last
+        expect(message.to).to eq([User.first.email])
+      end
+      it "has the right content" do
+        message = ActionMailer::Base.deliveries.last
+        expect(message.subject).to eq('Welcome to MyFLiX.com!')
       end
     end
   end

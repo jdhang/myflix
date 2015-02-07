@@ -13,3 +13,7 @@
 # Ignore all logfiles and tempfiles.
 /log/*.log
 /tmp
+
+# Ignore secret environment variable file
+config/secret.yml
+config/database.yml

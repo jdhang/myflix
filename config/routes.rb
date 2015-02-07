@@ -14,6 +14,12 @@ Myflix::Application.routes.draw do
   delete 'unfollow', to: 'followings#destroy'
 
   resources :users, only: [:show, :new, :create]
+  get 'forgot_password', to: 'reset_password#new'
+  post 'reset_password', to: 'reset_password#create'
+  get 'reset_password', to: 'reset_password#edit'
+  patch 'reset_password', to: 'reset_password#update'
+  get 'confirm_password_reset', to: 'reset_password#confirm'
+  get 'link_expired', to: 'reset_password#link_expired'
 
   resources :videos, only: [:index, :show] do
     resources :reviews, only: [:create]

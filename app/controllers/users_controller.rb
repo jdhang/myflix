@@ -2,7 +2,7 @@ class UsersController < ApplicationController
   before_action :require_user, only: [:show]
 
   def show
-    @user = User.find(params[:id])
+    @user = User.find_by(token: params[:id])
   end
 
   def new
@@ -13,7 +13,8 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
 
     if @user.save
-      flash[:success] = "You have successfully registered"
+      UserMailer.welcome_email(@user).deliver
+      flash[:notice] = "You have successfully registered"
       redirect_to signin_path
     else
       render :new
@@ -21,7 +22,8 @@ class UsersController < ApplicationController
   end
 
   private
-    def user_params
-      params.require(:user).permit(:email, :password, :full_name)
-    end
+
+  def user_params
+    params.require(:user).permit(:email, :password, :full_name)
+  end
 end

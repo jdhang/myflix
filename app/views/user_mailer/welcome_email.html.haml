@@ -1,0 +1,9 @@
+!!! 5
+%html
+  %body
+    %h3= "Welcome to MyFLiX.com, #{@user.full_name}"
+    %p You have successfully signed up to MyFLiX.com
+    %p
+      You can sign in using this link:
+      = link_to "Sign in here", @url
+    %p Thank you for siging up to our video service!

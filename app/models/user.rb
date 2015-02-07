@@ -43,22 +43,23 @@ class User < ActiveRecord::Base
   end
 
   private
-    def generate_token
-      self.token = SecureRandom.urlsafe_base64
-    end
 
-    def new_queue_item_review(queue_item, rating)
-      queue_item.video.reviews.create!(skip_validation: true, rating: rating, author: queue_item.user)
-    end
+  def generate_token
+    self.token = SecureRandom.urlsafe_base64
+  end
 
-    def update_queue_item_rating(queue_item, rating)
-      review = queue_item.video.reviews.where(author: queue_item.user).first
-      if review
-        review.update!(skip_validation: true, rating: rating)
-      end
-    end
+  def new_queue_item_review(queue_item, rating)
+    queue_item.video.reviews.create!(skip_validation: true, rating: rating, author: queue_item.user)
+  end
 
-    def input_rating_empty?(rating)
-      rating == ""
+  def update_queue_item_rating(queue_item, rating)
+    review = queue_item.video.reviews.where(author: queue_item.user).first
+    if review
+      review.update!(skip_validation: true, rating: rating)
     end
+  end
+
+  def input_rating_empty?(rating)
+    rating == ""
+  end
 end

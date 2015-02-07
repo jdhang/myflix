@@ -6,8 +6,11 @@ class User < ActiveRecord::Base
 
   has_secure_password validations: false
 
-  validates_presence_of :email, :password, :full_name
-  validates_uniqueness_of :email
+  validates :email, presence: true, uniqueness: true
+  validates :full_name, presence: true
+  validates :password, presence: true, on: :create
+
+  before_create :generate_token
 
   def update_queue_items(new_queue_items)
     ActiveRecord::Base.transaction do
@@ -35,7 +38,15 @@ class User < ActiveRecord::Base
     queue_items.map(&:video).include?(video)
   end
 
+  def to_param
+    token
+  end
+
   private
+    def generate_token
+      self.token = SecureRandom.urlsafe_base64
+    end
+
     def new_queue_item_review(queue_item, rating)
       queue_item.video.reviews.create!(skip_validation: true, rating: rating, author: queue_item.user)
     end

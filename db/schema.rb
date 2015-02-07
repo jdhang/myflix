@@ -52,6 +52,8 @@ ActiveRecord::Schema.define(version: 20150206175405) do
     t.string   "full_name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "token"
+    t.string   "secret_token"
   end
 
   create_table "videos", force: true do |t|

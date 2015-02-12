@@ -147,7 +147,7 @@ describe QueueItemsController do
 
         it "does not create a new review rating if one exists" do
           post :update_queue, queue_items: [{id: queue_item1.id, position: 1, rating: 4},{id: queue_item2.id, position: 2, rating: 2}]
-          expect(queue_item2.reload.video.reviews.count).to eq(1) 
+          expect(queue_item2.reload.video.reviews.count).to eq(1)
         end
 
         it "does not update queue item if queue item does not belong to the current user" do
@@ -156,9 +156,9 @@ describe QueueItemsController do
           post :update_queue, queue_items: [{id: queue_item1.id, position: 2}]
           expect(queue_item1.reload.position).to eq(1)
         end
-      endge
+      end
 
-      context "with invalid inputs" do     
+      context "with invalid inputs" do
 
         it "redirects to my queue path" do
           post :update_queue, queue_items: [{id: queue_item1.id, position: 3.2},{id: queue_item2.id, position: 2},{id: queue_item3.id, position: 3}]
@@ -179,23 +179,21 @@ describe QueueItemsController do
     end
 
     context "with unauthenticated users" do
-      
       it "redirects to sign in page" do
         post :update_queue
         expect(response).to redirect_to signin_path
       end
     end
-
   end
 
   describe "DELETE destroy" do
-    
+
     context "with authenticated users" do
 
       let(:queue_item) { Fabricate(:queue_item, position: 1, user: current_user)}
 
       before { set_current_user }
-      
+
       it "redirects to my queue path" do
         delete :destroy, id: queue_item.id
         expect(response).to redirect_to myqueue_path
@@ -226,7 +224,7 @@ describe QueueItemsController do
     end
 
     context "with unauthenticated users" do
-      
+
       it "redirects to sign in path" do
         delete :destroy, id: Fabricate(:queue_item).id
         expect(response).to redirect_to signin_path

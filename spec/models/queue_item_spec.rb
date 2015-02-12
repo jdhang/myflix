@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe QueueItem do
-  
+
   it { expect(subject).to belong_to(:user) }
   it { expect(subject).to belong_to(:video) }
   it { expect(subject).to validate_numericality_of(:position).only_integer}
@@ -18,7 +18,6 @@ describe QueueItem do
   end
 
   describe "#rating" do
-    
     it "returns rating from review when review is present" do
       video = Fabricate(:video)
       user = Fabricate(:user)
@@ -39,7 +38,6 @@ describe QueueItem do
   end
 
   describe "#category_name" do
-    
     it "returns category's name of the video" do
       category = Fabricate(:category, name: "Dramas")
       video = Fabricate(:video, category: category)
@@ -51,7 +49,6 @@ describe QueueItem do
   end
 
   describe "#category" do
-
     it "returns the category of the video" do
       category = Fabricate(:category, name: "Dramas")
       video = Fabricate(:video, category: category)

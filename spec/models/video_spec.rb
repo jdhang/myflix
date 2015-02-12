@@ -54,7 +54,6 @@ describe Video do
   end
 
   describe "#rating" do
-    
     it "returns 'No ratings yet' when there are no reviews" do
       video = Fabricate(:video)
 
@@ -71,7 +70,5 @@ describe Video do
 
       expect(video.rating).to eq("5.0/5.0")
     end
-
   end
-
 end

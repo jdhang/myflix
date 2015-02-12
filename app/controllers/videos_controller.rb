@@ -14,14 +14,15 @@ class VideosController < ApplicationController
   def search
     @search_results = Video.search_by_title(params[:search_terms])
   end
-  
-  private
-    def video_params
-      params.require(:video).permit(:title, :description, :small_cover_url, :large_cover_url)
-    end
 
-    def set_video
-      @video = Video.find(params[:id])
-    end
+  private
+
+  def video_params
+    params.require(:video).permit(:title, :description, :small_cover_url, :large_cover_url)
+  end
+
+  def set_video
+    @video = Video.find(params[:id])
+  end
 
 end

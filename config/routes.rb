@@ -21,6 +21,9 @@ Myflix::Application.routes.draw do
   get 'confirm_password_reset', to: 'reset_password#confirm'
   get 'link_expired', to: 'reset_password#link_expired'
 
+  get 'invite', to: 'invitation#new'
+  post 'invite', to: 'invitation#create'
+
   resources :videos, only: [:index, :show] do
     resources :reviews, only: [:create]
     collection do

@@ -8,7 +8,7 @@ class QueueItemsController < ApplicationController
 
   def create
     video = Video.find(params[:video_id])
-    
+
     if video_in_queue?(video)
       redirect_to video, alert: "Video is already in your queue"
     else
@@ -48,7 +48,7 @@ class QueueItemsController < ApplicationController
   end
 
   def video_in_queue?(video)
-    QueueItem.find_by(video: video)
+    QueueItem.find_by(video: video, user: current_user)
   end
 
 end

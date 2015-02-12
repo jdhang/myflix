@@ -28,6 +28,27 @@ describe ResetPasswordController do
         expect(response).to redirect_to forgot_password_path
       end
     end
+    context "email sending" do
+      let(:user) { Fabricate(:user) }
+      before do
+        post :create, email: user.email
+      end
+      it "sends out the email" do
+        expect(ActionMailer::Base.deliveries).to be_present
+      end
+      it "sends from the right email" do
+        message = ActionMailer::Base.deliveries.last
+        expect(message.from).to eq(["passwordreset@myflix.com"])
+      end
+      it "sends to the correct user" do
+        message = ActionMailer::Base.deliveries.last
+        expect(message.to).to eq([User.first.email])
+      end
+      it "has the reset password link" do
+        message = ActionMailer::Base.deliveries.last
+        expect(message.subject).to eq("Password Reset")
+      end
+    end
   end
 
   describe "GET edit" do

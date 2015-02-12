@@ -23,33 +23,104 @@ describe UsersController do
         expect(response).to redirect_to signin_path
       end
       it "flashes error message" do
-        expect(flash[:danger]).to_not be_nil
+        expect(flash[:error]).to_not be_nil
       end
     end
   end
 
   describe "GET new" do
-    it "set @user" do
-      get :new
-      expect(assigns(:user)).to be_instance_of(User)
+    context "request has email param" do
+      let(:user) { Fabricate(:user) }
+      let(:email) { "test@example.com" }
+      before do
+        get :new, t: user.token, email: email
+      end
+      it "sets @token" do
+        expect(assigns(:token)).to eq(user.token)
+      end
+      it "set @user" do
+        expect(assigns(:user)).to be_instance_of(User)
+      end
+    end
+
+    context "request does not have email param" do
+      before do
+        get :new
+      end
+      it "does not set @email" do
+        expect(assigns(:email)).to be_nil
+      end
+      it "set @user" do
+        expect(assigns(:user)).to be_instance_of(User)
+      end
     end
   end
 
   describe "POST create" do
     context "with valid input" do
-      before do
-        post :create, user: Fabricate.attributes_for(:user)
+      context "user token is passed in" do
+        let(:referrer) { Fabricate(:user) }
+        before do
+          post :create, user: Fabricate.attributes_for(:user, t: referrer.token)
+        end
+
+        it "referrer has new user as a follower" do
+          expect(User.find(referrer.id).followers).to eq([User.last])
+        end
+        it "new user has referrer as a follower" do
+          expect(User.last.followers).to eq([User.find(referrer.id)])
+        end
+        it "creates a user" do
+          expect(User.count).to eq(2)
+        end
+        it "flashes success message" do
+          expect(flash[:notice]).to be_present
+        end
+        it "redirects to sign in path" do
+          expect(response).to redirect_to signin_path
+        end
       end
-      it "creates user" do
-        expect(User.count).to eq(1)
+
+      context "user token is not passed in" do
+        before { post :create, user: Fabricate.attributes_for(:user) }
+
+        it "creates a user" do
+          expect(User.count).to eq(1)
+        end
+        it "user has no followers" do
+          expect(User.last.followers).to eq([])
+        end
+        it "flashes success message" do
+          expect(flash[:notice]).to be_present
+        end
+        it "redirects to sign in path" do
+          expect(response).to redirect_to signin_path
+        end
       end
-      it "flashes success message" do
-        expect(flash[:notice]).to be_present
-      end
-      it "redirects to sign in path" do
-        expect(response).to redirect_to signin_path
+
+      context "email sending" do
+        before do
+          post :create, user: Fabricate.attributes_for(:user)
+        end
+
+        it "sends out the email" do
+          expect(ActionMailer::Base.deliveries).to be_present
+        end
+        it "sends from the right email" do
+          message = ActionMailer::Base.deliveries.last
+          expect(message.from).to eq(["welcome@myflix.com"])
+        end
+        it "sends to the right user" do
+          message = ActionMailer::Base.deliveries.last
+          expect(message.to).to eq([User.last.email])
+        end
+        it "has the right content" do
+          message = ActionMailer::Base.deliveries.last
+          expect(message.subject).to eq('Welcome to MyFLiX.com!')
+        end
       end
     end
+
     context "with invalid input" do
       before do
         post :create, user: { email: "sample@example.com", full_name: "Full Name" }
@@ -62,26 +133,6 @@ describe UsersController do
       end
       it "set @user" do
         expect(assigns(:user)).to be_instance_of(User)
-      end
-    end
-    context "email sending" do
-      before do
-        post :create, user: Fabricate.attributes_for(:user)
-      end
-      it "sends out the email" do
-        expect(ActionMailer::Base.deliveries).to be_present
-      end
-      it "sends from the right email" do
-        message = ActionMailer::Base.deliveries.last
-        expect(message.from).to eq(["welcome@myflix.com"])
-      end
-      it "sends to the right user" do
-        message = ActionMailer::Base.deliveries.last
-        expect(message.to).to eq([User.first.email])
-      end
-      it "has the right content" do
-        message = ActionMailer::Base.deliveries.last
-        expect(message.subject).to eq('Welcome to MyFLiX.com!')
       end
     end
   end

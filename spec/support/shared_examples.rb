@@ -7,6 +7,6 @@ shared_examples "require_signin" do
     expect(response).to redirect_to signin_path
   end
   it "flashes error message" do
-    expect(flash[:danger]).to_not be_nil
+    expect(flash[:error]).to be_present
   end
 end

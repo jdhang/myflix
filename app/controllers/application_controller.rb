@@ -13,7 +13,7 @@ class ApplicationController < ActionController::Base
 
   def require_user
     if !logged_in?
-      flash[:danger] = "Access Denied. Please sign in first."
+      flash[:error] = "Access Denied. Please sign in first."
       redirect_to signin_path
     end
   end

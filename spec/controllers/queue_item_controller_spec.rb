@@ -1,11 +1,9 @@
 require 'spec_helper'
 
 describe QueueItemsController do
-  
   describe "GET index" do
 
     context "with authenticated users" do
-      
       let(:current_user) { Fabricate(:user) }
       let(:video) { Fabricate(:video) }
 
@@ -16,7 +14,6 @@ describe QueueItemsController do
       it "sets @queue" do
         queue1 = Fabricate(:queue_item, video: video, user: current_user)
         queue2 = Fabricate(:queue_item, video: video, user: current_user)
-        
         get :index
         expect(assigns(:queue)).to match_array([queue1, queue2])
       end
@@ -24,7 +21,6 @@ describe QueueItemsController do
     end
 
     context "with unauthenticated users" do
-      
       it "redirects to sign in path" do
         get :index
         expect(response).to redirect_to signin_path
@@ -35,7 +31,6 @@ describe QueueItemsController do
   end
 
   describe "POST create" do
-    
     context "with authenticated users" do
 
     let(:video) { Fabricate(:video) }
@@ -47,17 +42,18 @@ describe QueueItemsController do
 
         before do
           queue_item = Fabricate(:queue_item, video: monk, user: current_user, position: 1)
+          queue_item2=  Fabricate(:queue_item, video: video, user: Fabricate(:user), position: 1)
           post :create, video_id: video.id
         end
 
         it "create a queue item" do
-          expect(QueueItem.count).to eq(2)
+          expect(QueueItem.count).to eq(3)
         end
 
         it "create a queue item with the associated video" do
           expect(QueueItem.last.video).to eq(video)
         end
-        
+
         it "create a queue item for the signed in user" do
           expect(QueueItem.last.user).to eq(current_user)
         end
@@ -78,7 +74,7 @@ describe QueueItemsController do
           queue_item = Fabricate(:queue_item, video: video, user: current_user, position: 1)
           post :create, video_id: video.id
         end
-        
+
         it "not create a queue item" do
           expect(current_user.queue_items.count).to eq(1)
         end

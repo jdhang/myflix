@@ -1,4 +1,8 @@
+require_relative '../../lib/tokenable'
+
 class User < ActiveRecord::Base
+  include Tokenable
+
   has_many :reviews
   has_many :queue_items, -> {order :position}
   has_many :followings
@@ -9,8 +13,6 @@ class User < ActiveRecord::Base
   validates :email, presence: true, uniqueness: true
   validates :full_name, presence: true
   validates :password, presence: true, on: :create
-
-  before_create :generate_token
 
   def update_queue_items(new_queue_items)
     ActiveRecord::Base.transaction do
@@ -43,10 +45,6 @@ class User < ActiveRecord::Base
   end
 
   private
-
-  def generate_token
-    self.token = SecureRandom.urlsafe_base64
-  end
 
   def new_queue_item_review(queue_item, rating)
     queue_item.video.reviews.create!(skip_validation: true, rating: rating, author: queue_item.user)

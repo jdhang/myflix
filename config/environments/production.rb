@@ -21,11 +21,11 @@ Myflix::Application.configure do
   config.action_mailer.default_url_options = { :host => ENV['APP_HOST'] }
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
-    :address                     => "smtp.gmail.com",
+    :address                     => ENV["mailgun_address"]
     :port                        => 587,
-    :domain                      => ENV["EMAIL_DOMAIN"],
-    :user_name                   => ENV["GMAIL_USERNAME"],
-    :password                    => ENV["GMAIL_PASSWORD"],
+    :domain                      => ENV["mailgun_domain"],
+    :user_name                   => ENV["mailgun_username"],
+    :password                    => ENV["mailgun_password"],
     :authentication              => 'plain',
     :enable_starttls_auto        => true
   }

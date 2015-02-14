@@ -17,3 +17,6 @@
 # Ignore secret environment variable file
 config/secret.yml
 config/database.yml
+
+# Ignore application configuration
+/config/application.yml

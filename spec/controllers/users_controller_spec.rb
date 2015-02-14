@@ -106,10 +106,6 @@ describe UsersController do
         it "sends out the email" do
           expect(ActionMailer::Base.deliveries).to be_present
         end
-        it "sends from the right email" do
-          message = ActionMailer::Base.deliveries.last
-          expect(message.from).to eq(["welcome@myflix.com"])
-        end
         it "sends to the right user" do
           message = ActionMailer::Base.deliveries.last
           expect(message.to).to eq([User.last.email])

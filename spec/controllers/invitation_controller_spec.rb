@@ -51,10 +51,6 @@ describe InvitationController do
         message = ActionMailer::Base.deliveries.last
         expect(message.to).to eq([email])
       end
-      it "sends to the friend's email" do
-        message = ActionMailer::Base.deliveries.last
-        expect(message.from).to eq(["invitation@myflix.com"])
-      end
       it "has the correct content" do
         message = ActionMailer::Base.deliveries.last
         expect(message.subject).to eq("Your friend has invited you to MyFLiX.com")

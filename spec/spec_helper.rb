@@ -5,6 +5,8 @@ require 'rspec/rails'
 require 'shoulda/matchers'
 require 'capybara/rails'
 require 'capybara/email/rspec'
+require 'sidekiq/testing'
+Sidekiq::Testing.inline!
 
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
@@ -28,6 +30,11 @@ RSpec.configure do |config|
   # config.mock_with :mocha
   # config.mock_with :flexmock
   # config.mock_with :rr
+
+  config.before(:each) do |example_method|
+    Sidekiq::Worker.clear_all
+  end
+
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"

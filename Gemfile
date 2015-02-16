@@ -13,6 +13,7 @@ gem 'pg'
 gem 'bootstrap_form'
 gem 'bcrypt'
 gem 'figaro', '~> 1.1'
+gem 'sidekiq'
 
 group :development do
   gem 'thin'
@@ -38,4 +39,5 @@ end
 
 group :production do
   gem 'rails_12factor'
+  gem 'rack-timeout'
 end

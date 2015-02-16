@@ -7,6 +7,9 @@ describe InvitationController do
         set_current_user
         get :new
       end
+      it "sets @invitation" do
+        expect(assigns(:invitation)).to be_an_instance_of(Invitation)
+      end
       it "renders new template" do
         expect(response).to render_template :new
       end
@@ -19,41 +22,40 @@ describe InvitationController do
 
   describe "POST create" do
     context "with authenticated users" do
-      let(:name) { "Test Dummy" }
-      let(:email) { "test@example.com" }
-      let(:message) { "Cool site!"}
-      before do
-        set_current_user
-        post :create, name: name, email: email, message: message
+      context "with valid inputs" do
+        before do
+          set_current_user
+          post :create, invitation: Fabricate.attributes_for(:invitation)
+        end
+        it "creates an invitation" do
+          expect(Invitation.count).to eq(1)
+        end
+        it "redirects to invite path" do
+          expect(response).to redirect_to invite_path
+        end
+        it "flashes success message" do
+          expect(flash[:notice]).to be_present
+        end
+        it "sends out the invitation email" do
+          expect(ActionMailer::Base.deliveries).to be_present
+        end
+        it "sends from the correct email" do
+          message = ActionMailer::Base.deliveries.last
+          expect(message.to).to eq([Invitation.first.email])
+        end
+        it "has the correct content" do
+          message = ActionMailer::Base.deliveries.last
+          expect(message.subject).to eq("Your friend has invited you to MyFLiX.com")
+        end
       end
-      it "sets @user" do
-        expect(assigns(:user)).to eq(current_user)
-      end
-      it "sets @name" do
-        expect(assigns(:name)).to eq(name)
-      end
-      it "sets @email" do
-        expect(assigns(:email)).to eq(email)
-      end
-      it "sets @message" do
-        expect(assigns(:message)).to eq(message)
-      end
-      it "redirects to invite path" do
-        expect(response).to redirect_to invite_path
-      end
-      it "flashes success message" do
-        expect(flash[:notice]).to be_present
-      end
-      it "sends out the invitation email" do
-        expect(ActionMailer::Base.deliveries).to be_present
-      end
-      it "sends from the correct email" do
-        message = ActionMailer::Base.deliveries.last
-        expect(message.to).to eq([email])
-      end
-      it "has the correct content" do
-        message = ActionMailer::Base.deliveries.last
-        expect(message.subject).to eq("Your friend has invited you to MyFLiX.com")
+      context "with invalid inputs" do
+        before do
+          set_current_user
+          post :create, invitation: { name: "Name", message: "messages are fun" }
+        end
+        it "renders new template" do
+          expect(response).to render_template :new
+        end
       end
     end
     context "with unauthenticated users" do

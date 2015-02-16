@@ -31,12 +31,13 @@ describe UsersController do
   describe "GET new" do
     context "request has email param" do
       let(:user) { Fabricate(:user) }
+      let(:invitation) { Fabricate(:invitation, inviter: user) }
       let(:email) { "test@example.com" }
       before do
-        get :new, t: user.token, email: email
+        get :new, t: invitation.id, email: email
       end
-      it "sets @token" do
-        expect(assigns(:token)).to eq(user.token)
+      it "sets @id" do
+        expect(assigns(:id).to_i).to eq(invitation.id)
       end
       it "set @user" do
         expect(assigns(:user)).to be_instance_of(User)
@@ -59,16 +60,17 @@ describe UsersController do
   describe "POST create" do
     context "with valid input" do
       context "user token is passed in" do
-        let(:referrer) { Fabricate(:user) }
+        let(:inviter) { Fabricate(:user) }
+        let(:invitation) { Fabricate(:invitation, inviter: inviter) }
         before do
-          post :create, user: Fabricate.attributes_for(:user, t: referrer.token)
+          post :create, user: Fabricate.attributes_for(:user, t: invitation.id)
         end
 
         it "referrer has new user as a follower" do
-          expect(User.find(referrer.id).followers).to eq([User.last])
+          expect(User.find(inviter.id).followers).to eq([User.last])
         end
         it "new user has referrer as a follower" do
-          expect(User.last.followers).to eq([User.find(referrer.id)])
+          expect(User.last.followers).to eq([User.find(inviter.id)])
         end
         it "creates a user" do
           expect(User.count).to eq(2)
@@ -82,7 +84,9 @@ describe UsersController do
       end
 
       context "user token is not passed in" do
-        before { post :create, user: Fabricate.attributes_for(:user) }
+        before do
+          post :create, user: Fabricate.attributes_for(:user)
+        end
 
         it "creates a user" do
           expect(User.count).to eq(1)

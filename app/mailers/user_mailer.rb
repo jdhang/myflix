@@ -13,12 +13,9 @@ class UserMailer < ActionMailer::Base
     mail to: @user.email, subject: "Password Reset"
   end
 
-  def invitation_email(name, email, message, user)
-    @name = name
-    @email = email
-    @message = message
-    @user = user
-    @url = register_url(t: @user.token, email: @email)
-    mail to: @email, subject: "Your friend has invited you to MyFLiX.com"
+  def invitation_email(invitation)
+    @invitation = invitation
+    @url = register_url(t: @invitation.id, email: @invitation.email)
+    mail to: @invitation.email, subject: "Your friend has invited you to MyFLiX.com"
   end
 end

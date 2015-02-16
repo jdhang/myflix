@@ -9,7 +9,7 @@ class ResetPasswordController < ApplicationController
     if @user
       @user.secret_token = SecureRandom.urlsafe_base64
       @user.save
-      UserMailer.reset_password_email(@user).deliver
+      UserMailer.delay.reset_password_email(@user)
       redirect_to confirm_password_reset_path
     else
       flash[:error] = "Could not find the Email submitted."

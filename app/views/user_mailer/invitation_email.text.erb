@@ -1,5 +1,5 @@
-<%= "Congrats #{@name}! Your friend, #{@user.full_name} has sent you an invitation to join MyFLiX.com!" %>
+<%= "Congrats #{@invitation.email}! Your friend, #{@invitation.inviter.full_name} has sent you an invitation to join MyFLiX.com!" %>
 
-<%= @message %>
+<%= @invitation.message %>
 
 <%= link_to "Register Now", @url %>and start using our premium video services!

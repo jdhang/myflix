@@ -22,7 +22,7 @@ Myflix::Application.routes.draw do
   get 'link_expired', to: 'reset_password#link_expired'
 
   get 'invite', to: 'invitation#new'
-  post 'invite', to: 'invitation#create'
+  post 'invite', to: 'invitation#create', as: 'invitations'
 
   resources :videos, only: [:index, :show] do
     resources :reviews, only: [:create]

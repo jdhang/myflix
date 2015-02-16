@@ -43,9 +43,9 @@ def send_invite
   sign_in(@user)
   visit invite_path
 
-  fill_in "name", with: "Test Dummy"
-  fill_in "email", with: "test@example.com"
-  fill_in "message", with: "Please join this really cool site!"
+  fill_in "invitation_name", with: "Test Dummy"
+  fill_in "invitation_email", with: "test@example.com"
+  fill_in "invitation_message", with: "Please join this really cool site!"
   click_button "Send Invitation"
 
   open_email("test@example.com")
@@ -59,7 +59,6 @@ end
 def friend_registers
   current_email.click_link "Register Now"
 
-  fill_in "Email", with: "test@example.com"
   fill_in "Password", with: "testtest"
   fill_in "Full Name", with: "Test Dummy"
   click_button "Sign Up"

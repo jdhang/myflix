@@ -7,9 +7,8 @@ class UsersController < ApplicationController
 
   def new
     if params[:email]
-      email = params[:email]
-      @token = params[:t]
-      @user = User.new(email: email)
+      @id = params[:t]
+      @user = User.new(email: params[:email])
     else
       @user = User.new
     end
@@ -20,13 +19,12 @@ class UsersController < ApplicationController
 
     if @user.save
       if params[:user][:t]
-        @referrer = User.find_by(token: params[:user][:t])
-        ref_following = @referrer.followings.build(follower_id: @user.id)
-        ref_following.save
-        following = @user.followings.build(follower_id: @referrer.id)
-        following.save
+        invitation = Invitation.find(params[:user][:t])
+        follow(@user, invitation.inviter)
+        follow(invitation.inviter, @user)
+        registered(invitation)
       end
-      UserMailer.welcome_email(@user).deliver
+      UserMailer.delay.welcome_email(@user)
       flash[:notice] = "You have successfully registered"
       redirect_to signin_path
     else
@@ -38,5 +36,15 @@ class UsersController < ApplicationController
 
   def user_params
     params.require(:user).permit(:email, :password, :full_name)
+  end
+
+  def follow(user, follower)
+    user.followings.build(follower_id: follower.id)
+    user.save
+  end
+
+  def registered(invitation)
+    invitation.registered = true
+    invitation.save
   end
 end

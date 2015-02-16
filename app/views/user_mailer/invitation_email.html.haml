@@ -2,8 +2,8 @@
 %html
   %body
     %h3
-      Congrats #{@name}! Your friend, #{@user.full_name} has sent you an invitation to join MyFLiX.com!
-    %p= @message
+      Congrats #{@invitation.name}! Your friend, #{@invitation.inviter.full_name} has sent you an invitation to join MyFLiX.com!
+    %p= @invitation.message
     %p
       = link_to "Register Now", @url
       and start using our premium video services!

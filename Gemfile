@@ -1,4 +1,3 @@
-
 source 'https://rubygems.org'
 ruby '2.1.5'
 
@@ -12,8 +11,13 @@ gem 'jquery-rails'
 gem 'pg'
 gem 'bootstrap_form'
 gem 'bcrypt'
+
 gem 'figaro', '~> 1.1'
 gem 'sidekiq'
+gem 'rack-timeout'
+gem 'sentry-raven', :git => 'https://github.com/getsentry/raven-ruby.git'
+gem 'paratrooper'
+gem 'carrierwave'
 
 group :development do
   gem 'thin'
@@ -39,5 +43,5 @@ end
 
 group :production do
   gem 'rails_12factor'
-  gem 'rack-timeout'
+  gem 'unicorn'
 end

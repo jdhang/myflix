@@ -1,6 +1,5 @@
 class VideosController < ApplicationController
   before_action :set_video, except: [:index, :new, :create, :search]
-  before_action :require_user
 
   def index
     @categories = Category.all

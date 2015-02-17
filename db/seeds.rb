@@ -12,7 +12,7 @@ futurama = Video.create({title: 'Futurama', description: "This is a funny show a
 south_park = Video.create({title: 'South Park', description: "Hilarious show!!", small_cover_url: "/tmp/south_park.jpg", category: comedies})
 monk = Video.create({title: 'Monk', description: "This is a great show", small_cover_url: "/tmp/monk.jpg", category: dramas})
 
-jason = User.create({email: "jason@example.com", password: "password", full_name: "Jason Hang"})
+jason = User.create({email: "jason@example.com", password: "password", full_name: "Jason Hang", admin: true})
 bob = User.create({email: "bob@example.com", password: "password", full_name: "Bob Bobby"})
 alice = User.create({email: "alice@example.com", password: "password", full_name: "Alice Wonder"})
 jon = User.create({email: "jon@example.com", password: "password", full_name: "Jon Jonny"})

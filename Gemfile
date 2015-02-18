@@ -15,11 +15,12 @@ gem 'bcrypt'
 gem 'figaro', '~> 1.1'
 gem 'sidekiq'
 gem 'rack-timeout'
-gem 'sentry-raven', :git => 'https://github.com/getsentry/raven-ruby.git'
+gem 'sentry-raven'
 gem 'paratrooper'
 gem 'carrierwave'
 gem 'mini_magick'
 gem 'fog'
+gem 'stripe'
 
 group :development do
   gem 'thin'

@@ -3,7 +3,7 @@ def set_current_user
   session[:user_id] = bob.id
 end
 
-def set_admin_user
+def set_current_admin
   jim = Fabricate(:user, admin: true)
   session[:user_id] = jim.id
 end

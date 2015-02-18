@@ -37,6 +37,6 @@ Myflix::Application.routes.draw do
   resources :queue_items, only: [:create, :destroy]
 
   namespace :admin do
-    resources :videos, only: [:new]
+    resources :videos, only: [:new, :create]
   end
 end

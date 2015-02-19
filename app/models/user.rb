@@ -44,6 +44,10 @@ class User < ActiveRecord::Base
     token
   end
 
+  def follow(user)
+    followings.create(follower_id: user.id)
+  end
+
   private
 
   def new_queue_item_review(queue_item, rating)

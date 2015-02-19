@@ -1,4 +1,4 @@
-class VideosController < ApplicationController
+class VideosController < AuthenticatesController
   before_action :set_video, except: [:index, :new, :create, :search]
 
   def index

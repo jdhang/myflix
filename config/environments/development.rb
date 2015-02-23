@@ -7,8 +7,17 @@ Myflix::Application.configure do
 
   # Don't care if the mailer can't send
   config.action_mailer.raise_delivery_errors = false
-  config.action_mailer.delivery_method = :letter_opener
+  config.action_mailer.delivery_method = :smtp
   config.action_mailer.default_url_options = { :host => '127.0.0.1:3000' }
+  config.action_mailer.smtp_settings = {
+    :address                     => ENV["MAILGUN_ADDRESS"],
+    :port                        => 587,
+    :domain                      => ENV["MAILGUN_DOMAIN"],
+    :user_name                   => ENV["MAILGUN_USERNAME"],
+    :password                    => ENV["MAILGUN_PASSWORD"],
+    :authentication              => 'plain',
+    :enable_starttls_auto        => true
+  }
 
   # Print deprecation notices to the Rails logger
   config.active_support.deprecation = :log
